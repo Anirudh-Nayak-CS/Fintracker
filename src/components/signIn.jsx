@@ -1,28 +1,52 @@
-import {signInWithEmailAndPassword } from "firebase/auth";
+import {signInWithEmailAndPassword,signOut,signInWithPopup} from "firebase/auth";
 import { useState } from "react";
-import {auth} from "../config/firebase-config"
+import {auth,provider} from "../config/firebase-config"
 import { Label } from "./ui/label.jsx";
 import { cn } from "../lib/utils.js";
 import { IconBrandGoogle } from "@tabler/icons-react";
  import { Input } from "./ui/input.jsx"
 import { useNavigate } from "react-router-dom";
 
+
 export  const SigninForm= () => {
      const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const navigate=useNavigate();
-     const handleSubmit = async (e) => { 
+     const handlesignInSubmit = async (e) => { 
       e.preventDefault();
    try {
      const userCredentials=await  signInWithEmailAndPassword(auth,email,password)
      if(!userCredentials)
       throw new Error("User credentials not found.")
     console.log(userCredentials)
+    navigate('/signin')
+   } catch (error) {
+    console.log(error)
+   }
+  }
+
+      const handlesignOutSubmit = async () => { 
+     
+   try {
+   await  signOut(auth)
+    console.log("success")
     navigate('/')
    } catch (error) {
     console.log(error)
    }
   }
+  const handlesignInGoogle = async () => { 
+     
+   try {
+   await  signInWithPopup(auth, provider)
+    console.log("successfully logged in using google auth")
+    navigate('/')
+   } catch (error) {
+    console.log(error)
+   }
+  }
+
+
 
   return (
     <>
@@ -32,7 +56,7 @@ export  const SigninForm= () => {
        Login
       </h2>
  
-      <form className="my-8" onSubmit={handleSubmit}>
+      <form className="my-8" onSubmit={handlesignInSubmit}>
       
         <LabelInputContainer className="mb-4">
           <Label htmlFor="email">Email Address</Label>
@@ -56,9 +80,36 @@ export  const SigninForm= () => {
           Sign In &rarr;
           <BottomGradient />
         </button>
-        
+           
+         <div className="flex items-center my-4">
+          <hr className="flex-1 border-neutral-300 dark:border-neutral-700" />
+          <hr className="flex-1 border-neutral-300 dark:border-neutral-700" />
+        </div>
+
+              <button
+          className="group/btn relative block h-10 w-full rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset]"
+          type="button"
+          onClick={handlesignInGoogle}
+        >
+          Sign in with Google &rarr;
+          <BottomGradient />
+        </button>
+
+        <div className="flex items-center my-4">
+          <hr className="flex-1 border-neutral-300 dark:border-neutral-700" />
+          <hr className="flex-1 border-neutral-300 dark:border-neutral-700" />
+        </div>
 
       </form>
+         <button
+          className="group/btn relative block h-10 w-full rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset]"
+          type="button"
+          onClick={handlesignOutSubmit}
+        >
+          Sign Out &rarr;
+          <BottomGradient />
+        </button>
+
     </div>
       </>
   );
