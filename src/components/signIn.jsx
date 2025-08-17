@@ -19,7 +19,7 @@ export  const SigninForm= () => {
      if(!userCredentials)
       throw new Error("User credentials not found.")
     console.log(userCredentials)
-    navigate('/signin')
+    navigate('/dashboard')
    } catch (error) {
     console.log(error)
    }
